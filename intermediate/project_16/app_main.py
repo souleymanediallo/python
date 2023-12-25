@@ -2,7 +2,7 @@ import re
 import string
 from pathlib import Path
 
-from tinydb import TinyDB
+from tinydb import TinyDB, where
 
 
 class User:
@@ -24,6 +24,10 @@ class User:
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
+    @property
+    def db_instance(self):
+        return User.DB.get((where("first_name") == self.first_name) & (where("last_name") == self.last_name))
+
     def _check_user(self):
         self._check_full_name()
         self._check_phone_number()
@@ -41,23 +45,38 @@ class User:
         if any(char in special_characters for char in self.first_name + self.last_name):
             raise ValueError(f"Prénom et nom ne peuvent pas contenir de caractères spéciaux : {self.first_name} {self.last_name}")
 
+
+    def exists(self):
+        return bool(self.db_instance)
+
+    def delete(self):
+        if self.exists():
+            return User.DB.remove(doc_ids=[self.db_instance.doc_id])
+        return []
+
     def save(self, validate_data=False):
         if validate_data:
             self._check_user()
         return User.DB.insert(self.__dict__)
 
 
+def get_all_users():
+    return [User(**user) for user in User.DB.all()]
+
 
 if __name__ == '__main__':
-    from faker import Faker
-    fake = Faker(locale="fr_FR")
-    print("-" * 80)
-    for _ in range(10):
-        user = User(first_name=fake.first_name(),
-                    last_name=fake.last_name(),
-                    phone_number=fake.phone_number(),
-                    address=fake.address())
-
-        user.save()
-        print(user)
-        print("-" * 80)
+    joseph = User("Joseph", "Munoz")
+    print(joseph.db_instance)
+    print(joseph.delete())
+    # from faker import Faker
+    # fake = Faker(locale="fr_FR")
+    # print("-" * 80)
+    # for _ in range(10):
+    #     user = User(first_name=fake.first_name(),
+    #                 last_name=fake.last_name(),
+    #                 phone_number=fake.phone_number(),
+    #                 address=fake.address())
+    #
+    #     user.save()
+    #     print(user)
+    #     print("-" * 80)
