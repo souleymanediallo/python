@@ -1,7 +1,13 @@
 import re
 import string
+from pathlib import Path
+
+from tinydb import TinyDB
+
 
 class User:
+    DB = TinyDB(Path(__file__).parent / "db.json", indent=4)
+
     def __init__(self, first_name, last_name, phone_number="", address=""):
         self.first_name = first_name
         self.last_name = last_name
@@ -35,6 +41,11 @@ class User:
         if any(char in special_characters for char in self.first_name + self.last_name):
             raise ValueError(f"Prénom et nom ne peuvent pas contenir de caractères spéciaux : {self.first_name} {self.last_name}")
 
+    def save(self, validate_data=False):
+        if validate_data:
+            self._check_user()
+        return User.DB.insert(self.__dict__)
+
 
 
 if __name__ == '__main__':
@@ -47,6 +58,6 @@ if __name__ == '__main__':
                     phone_number=fake.phone_number(),
                     address=fake.address())
 
-        user._check_user()
+        user.save()
         print(user)
         print("-" * 80)
