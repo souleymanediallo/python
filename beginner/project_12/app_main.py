@@ -1,4 +1,9 @@
 import logging
+import os
+import json
+
+
+from constants import DATA_DIR
 
 LOGGER = logging.getLogger()
 
@@ -27,18 +32,34 @@ class MaListe(list):
         return False
 
     def afficher(self):
-        print(f"Liste {self.nom}:")
+        print(f"Ma Liste de {self.nom} :")
         for element in self:
             print(f"- {element}")
 
-list = MaListe("Courses")
-list.ajouter("Pain")
-list.ajouter("Beurre")
-list.ajouter("Lait")
-list.afficher()
+    def sauvegarder(self):
+        fichier = os.path.join(DATA_DIR, f"{self.nom}.json")
+        if not os.path.exists(DATA_DIR):
+            os.makedirs(DATA_DIR)
 
-list.enlever("Beurre")
-list.afficher()
+        with open(fichier, "w") as f:
+            json.dump(self, f, indent=4)
+        return True
+
+
+if __name__ == '__main__':
+    ma_liste = MaListe("Courses")
+    ma_liste.ajouter("Pain")
+    ma_liste.ajouter("Beurre")
+    ma_liste.ajouter("Lait")
+    ma_liste.sauvegarder()
+
+    ma_liste.enlever("Beurre")
+    ma_liste.afficher()
+
+    # ma_liste.ajouter(1)
+    # ma_liste.ajouter("Pain")
+
+
 
 
 
