@@ -1,11 +1,8 @@
-ma_chaine = "Python"
-for lettre in ma_chaine:
-    print(lettre)
+def get_stats(numbers):
+    minimum = min(numbers)
+    maximum = max(numbers)
+    return minimum, maximum
 
-
-def retourne_second_element(tuple_input):
-    return tuple_input[1]
-
-
-mon_tuple = (1, "deux", 3)
-print(retourne_second_element(mon_tuple))
+lengths = [79, 77, 55, 23, 56, 90, 29]
+minimum, maximum = get_stats(lengths)
+print(f"Min: {minimum}, Max: {maximum}")
