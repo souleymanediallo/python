@@ -23,3 +23,4 @@ class Laptop:
     def __repr__(self):
         return f"{self.name} costs {self.price}"
 
+
