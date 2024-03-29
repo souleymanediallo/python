@@ -16,6 +16,23 @@ class Voiture:
         print(f"Marque : {self.marque}, Kilométrage : {self._kilometrage}")
 
 
+class Batterie:
+    def __init__(self, capacite):
+        self.capacite = capacite
+
+    def affiche(self):
+        print(f"Capacité de la batterie : {self.capacite} kWh")
+
+class VoitureElectrique(Voiture):
+    def __init__(self, marque, kilometrage, capacite):
+        super().__init__(marque, kilometrage)
+        self.batterie = Batterie(capacite)
+
+    def affiche(self):
+        super().affiche()
+        self.batterie.affiche()
+
+
 voiture = Voiture("Toyota", 100000)
 voiture.affiche()
 
@@ -24,3 +41,6 @@ voiture.affiche()
 
 voiture.set_kilometrage(-1000)
 voiture.affiche()
+
+voiture_electrique = VoitureElectrique("Tesla", 50000, 75)
+voiture_electrique.affiche()
